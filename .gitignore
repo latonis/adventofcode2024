@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+# Solutions for AoC
+*/*input
+*/*.html
+*/*.css
+static/
