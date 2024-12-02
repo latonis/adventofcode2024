@@ -1,9 +1,11 @@
 #pragma once
 
 #include <algorithm>
+#include <array>
 #include <charconv>
 #include <fstream>
 #include <iostream>
+#include <list>
 #include <ranges>
 #include <regex>
 #include <string>
