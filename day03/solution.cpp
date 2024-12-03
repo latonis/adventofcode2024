@@ -11,8 +11,6 @@ void part_one() {
 
     auto words_end = std::sregex_iterator();
 
-    std::cout << "Found: " << std::distance(words_begin, words_end)
-              << "mul instrs\n";
     int total = 0;
     for (std::sregex_iterator i = words_begin; i != words_end; ++i) {
         std::smatch match = *i;
@@ -20,7 +18,6 @@ void part_one() {
         int second = std::stoi(match[2].str());
 
         total += first * second;
-        std::cout << "Match: " << match.str() << "\n";
     }
     std::cout << "Total: " << total << std::endl;
 }
@@ -54,7 +51,6 @@ void part_two() {
                 total += first * second;
             }
         }
-        std::cout << "Match: " << match.str() << "\n";
     }
     std::cout << "Total: " << total << std::endl;
 }
