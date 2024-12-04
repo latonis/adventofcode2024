@@ -16,7 +16,7 @@ std::unordered_map<direction, std::pair<int, int>> dir_to_pos = {
     {SW, {-1, -1}}, {W, {-1, 0}},  {SE, {-1, 1}}, {S, {0, -1}},
     {N, {0, 1}},    {NW, {1, -1}}, {E, {1, 0}},   {NE, {1, 1}}};
 
-int recurse(int x, int y, int nx, int ny, int value, direction dir) {
+int recurse(int x, int y, int nx, int ny, direction dir) {
     char cur = lines[y][x];
     if (cur == 'S') {
         return 1;
@@ -29,7 +29,7 @@ int recurse(int x, int y, int nx, int ny, int value, direction dir) {
 
     if ((0 <= new_y < ny) and (0 <= new_x < nx)) {
         if (lines[new_y][new_x] == next) {
-            return value + recurse(new_x, new_y, nx, ny, value, dir);
+            return recurse(new_x, new_y, nx, ny, dir);
         }
     }
 
@@ -45,7 +45,6 @@ void part_one() {
             auto c = lines[y][x];
 
             if (c == 'X') {
-                direction dir = NONE;
                 for (int i = -1; i < 2; i++) {
                     for (int j = -1; j < 2; j++) {
                         if (i == 0 and j == 0) {
@@ -57,7 +56,7 @@ void part_one() {
                         if ((0 <= new_y < ny) and (0 <= new_x < nx)) {
                             if (lines[new_y][new_x] == next) {
                                 total +=
-                                    recurse(new_x, new_y, nx, ny, 0,
+                                    recurse(new_x, new_y, nx, ny,
                                             pos_to_dir.find({j, i})->second);
                             }
                         }
@@ -90,12 +89,8 @@ void part_two() {
                     }
                 }
                 if (m_count == 2 and s_count == 2) {
-                    if ((lines[y - 1][x - 1] == lines[y + 1][x - 1] and
-                         lines[y - 1][x + 1] == lines[y + 1][x + 1]) or
-                        (lines[y - 1][x - 1] == lines[y - 1][x + 1] and
-                         lines[y + 1][x - 1] == lines[y + 1][x + 1]) and
-                            (lines[y - 1][x - 1] != lines[y + 1][x + 1]) and
-                            (lines[y + 1][x - 1] != lines[y - 1][x + 1])) {
+                    if ((lines[y - 1][x - 1] != lines[y + 1][x + 1]) and
+                        (lines[y - 1][x + 1] != lines[y + 1][x - 1])) {
                         total += 1;
                     }
                 }
