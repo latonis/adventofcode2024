@@ -36,14 +36,12 @@ void part_two() {
     bool enabled = true;
     for (std::sregex_iterator i = words_begin; i != words_end; ++i) {
         std::smatch match = *i;
-        std::string cur_match = match.str();
+        std::string cur_match = i->str();
         if (cur_match == "don't()") {
             enabled = false;
         } else if (cur_match == "do()") {
             enabled = true;
-        }
-
-        if (cur_match.find("mul") != std::string::npos) {
+        } else {
             int first = std::stoi(match[1].str());
             int second = std::stoi(match[2].str());
 
