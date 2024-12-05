@@ -1,6 +1,6 @@
 #include "../utils/utils.h"
 
-void part_one() {
+int part_one() {
     for (std::string line : get_input_all_lines("./test-input")) {
         auto inp =
             line | std::ranges::views::split(' ') |
@@ -16,18 +16,21 @@ void part_one() {
                           }) |
                           std::ranges::to<std::vector>();
     }
+    return 0;
 }
 
-void part_two() {
+int part_two() {
     auto line = get_input_one_line("./test-input");
     auto inp =
         line | std::ranges::views::split(' ') |
         std::views::transform([](auto v) { return std::string_view(v); }) |
         std::ranges::to<std::vector>();
+
+    return 0;
 }
 
 int main() {
-    part_one();
-    part_two();
+    auto part1 = timer<decltype(&part_one)>::time(part_one);
+    auto part2 = timer<decltype(&part_two)>::time(part_two);
     return 0;
 }
