@@ -2,7 +2,7 @@
 
 #include "../utils/utils.h"
 
-void part_one() {
+int part_one() {
     auto line = get_input_one_line("./input");
     std::regex w_regex("mul\\((\\d{1,3}),(\\d{1,3})\\)",
                        std::regex_constants::icase);
@@ -20,9 +20,10 @@ void part_one() {
         total += first * second;
     }
     std::cout << "Total: " << total << std::endl;
+    return 0;
 }
 
-void part_two() {
+int part_two() {
     auto line = get_input_one_line("./input");
     std::regex w_regex(
         "mul\\((\\d{1,3}),(\\d{1,3})\\)|(do\\(\\))|(don't\\(\\))",
@@ -51,10 +52,11 @@ void part_two() {
         }
     }
     std::cout << "Total: " << total << std::endl;
+    return 0;
 }
 
 int main() {
-    part_one();
-    part_two();
+    auto part1 = timer<decltype(&part_one)>::time(part_one);
+    auto part2 = timer<decltype(&part_two)>::time(part_two);
     return 0;
 }

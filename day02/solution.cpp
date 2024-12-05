@@ -47,7 +47,7 @@ bool check_vec(std::vector<int> input_ints) {
     return false;
 }
 
-void part_one() {
+int part_one() {
     int total = 0;
     for (std::string line : get_input_all_lines("./input")) {
         auto input_ints = line | std::views::split(' ') |
@@ -64,9 +64,10 @@ void part_one() {
     }
 
     std::cout << "Total: " << total << "\n";
+    return 0;
 }
 
-void part_two() {
+int part_two() {
     int total = 0;
     for (std::string line : get_input_all_lines("./input")) {
         auto input_ints = line | std::views::split(' ') |
@@ -83,10 +84,11 @@ void part_two() {
     }
 
     std::cout << "Total: " << total << "\n";
+    return 0;
 }
 
 int main() {
-    part_one();
-    part_two();
+    auto part1 = timer<decltype(&part_one)>::time(part_one);
+    auto part2 = timer<decltype(&part_two)>::time(part_two);
     return 0;
 }

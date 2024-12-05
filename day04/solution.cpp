@@ -36,7 +36,7 @@ int recurse(int x, int y, int nx, int ny, direction dir) {
     return 0;
 }
 
-void part_one() {
+int part_one() {
     int total = 0;
     int ny = lines.size();
     int nx = lines[0].size();
@@ -67,9 +67,10 @@ void part_one() {
     }
 
     std::cout << "XMAS times: " << total << "\n";
+    return 0;
 }
 
-void part_two() {
+int part_two() {
     int total = 0;
     for (int y = 1; y < lines.size() - 1; y++) {
         for (int x = 1; x < lines[y].size() - 1; x++) {
@@ -98,10 +99,11 @@ void part_two() {
         }
     }
     std::cout << "X-MAS times: " << total << "\n";
+    return 0;
 }
 
 int main() {
-    part_one();
-    part_two();
+    auto part1 = timer<decltype(&part_one)>::time(part_one);
+    auto part2 = timer<decltype(&part_two)>::time(part_two);
     return 0;
 }

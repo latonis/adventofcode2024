@@ -1,6 +1,6 @@
 #include "../utils/utils.h"
 
-void part_one() {
+int part_one() {
     int total = 0;
     std::vector<int> fs;
     std::vector<int> ss;
@@ -23,9 +23,10 @@ void part_one() {
     }
 
     std::cout << "Total calculation: " << total << "\n";
+    return total;
 }
 
-void part_two() {
+int part_two() {
     int total = 0;
     std::vector<int> fs;
     std::unordered_map<int, int> ss;
@@ -44,7 +45,6 @@ void part_two() {
             ss.insert({input_ints[1], 1});
         }
     }
-    std::sort(fs.begin(), fs.end());
 
     for (int i = 0; i < fs.size(); i++) {
         if (ss.contains(fs[i])) {
@@ -53,10 +53,11 @@ void part_two() {
     }
 
     std::cout << "Total calculation similarity: " << total << "\n";
+    return total;
 }
 
 int main() {
-    part_one();
-    part_two();
+    auto part1 = timer<decltype(&part_one)>::time(part_one);
+    auto part2 = timer<decltype(&part_two)>::time(part_two);
     return 0;
 }
