@@ -13,9 +13,9 @@ struct timer<R (*)(Args...)> {
         auto stop = std::chrono::high_resolution_clock::now();
 
         auto duration =
-            std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+            std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 
-        std::cout << std::format("Func took {} milliseconds", duration.count())
+        std::cout << std::format("Func took {}µs", duration.count())
                   << std::endl;
 
         return retval;
