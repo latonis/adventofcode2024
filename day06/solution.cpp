@@ -72,7 +72,7 @@ int find_loops(Cursor sp, std::set<std::pair<int, int>> obstacles, int xn,
 
             positions_visited_l.insert({sp.x, sp.y, sp.direction});
 
-        back_to_loop:
+            // back_to_loop:
             int p_x = sp.x;
             int p_y = sp.y;
 
@@ -94,10 +94,10 @@ int find_loops(Cursor sp, std::set<std::pair<int, int>> obstacles, int xn,
 
             if (obstacles.contains({p_x, p_y})) {
                 sp.turn_right();
-                goto back_to_loop;
+                // goto back_to_loop;
+            } else {
+                sp.move();
             }
-
-            sp.move();
         }
 
         obstacles.erase({p.first, p.second});
