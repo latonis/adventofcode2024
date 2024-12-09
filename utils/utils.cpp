@@ -7,13 +7,6 @@ void print_vec_int(std::vector<int> v) {
     std::cout << "\n";
 }
 
-void print_vec(std::vector<std::string> v) {
-    for (const auto& val : v) {
-        std::cout << val << " ";
-    }
-    std::cout << "\n";
-}
-
 void print_vec_hex(std::vector<int> v) {
     for (auto i : v) {
         std::cout << std::hex << i;
