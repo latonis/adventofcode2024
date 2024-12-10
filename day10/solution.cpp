@@ -1,3 +1,4 @@
+#include <map>
 #include <set>
 #include <stack>
 
@@ -13,8 +14,9 @@ struct Trailhead {
         return (x >= 0 and x < xn and y >= 0 and y < yn);
     }
 
-    int navigate(char current_char, std::vector<std::string> trail) {
-        std::set<std::pair<int, int>> visited_trailheads;
+    int navigate(char current_char, std::vector<std::string> trail,
+                 bool rating) {
+        std::map<std::pair<int, int>, int> visited_trailheads;
         std::stack<std::tuple<char, int, int>> s;
         s.push({current_char, x, y});
         while (not s.empty()) {
@@ -32,13 +34,28 @@ struct Trailhead {
                         y = p.second;
 
                         if (current_char + 1 == '9') {
-                            visited_trailheads.insert({x, y});
+                            if (visited_trailheads.contains(
+                                    std::make_pair(x, y))) {
+                                visited_trailheads.find(std::make_pair(x, y))
+                                    ->second += 1;
+                            }
+                            visited_trailheads.insert(
+                                {std::make_pair(x, y), 1});
                         }
                         s.push({current_char + 1, x, y});
                     }
                 }
             }
         }
+
+        if (rating) {
+            int total = 0;
+            for (const auto& p : visited_trailheads) {
+                total += p.second;
+            }
+            return total;
+        }
+
         return visited_trailheads.size();
     }
 };
@@ -58,9 +75,7 @@ int part_one() {
 
     int total = 0;
     for (Trailhead& t : trailheads) {
-        total += t.navigate('0', lines);
-        // total += t.std::cout << std::format("Trailhead at {},{}\n", t.x,
-        // t.y);
+        total += t.navigate('0', lines, false);
     }
 
     std::cout << "Total: " << total << "\n";
@@ -68,12 +83,24 @@ int part_one() {
 }
 
 int part_two() {
-    auto line = get_input_one_line("./test-input");
-    auto inp =
-        line | std::ranges::views::split(' ') |
-        std::views::transform([](auto v) { return std::string_view(v); }) |
-        std::ranges::to<std::vector>();
+    std::vector<std::string> lines = get_input_all_lines("./input");
+    auto yn = lines.size();
+    auto xn = lines[0].size();
+    std::vector<Trailhead> trailheads;
+    for (int y = 0; y < yn; y++) {
+        for (int x = 0; x < xn; x++) {
+            if (lines[y][x] == '0') {
+                trailheads.emplace_back(x, y, xn, yn);
+            }
+        }
+    }
 
+    int total = 0;
+    for (Trailhead& t : trailheads) {
+        total += t.navigate('0', lines, true);
+    }
+
+    std::cout << "Total: " << total << "\n";
     return 0;
 }
 
