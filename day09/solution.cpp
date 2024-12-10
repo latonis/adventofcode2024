@@ -24,10 +24,10 @@ std::vector<File> consolidate(std::vector<File> disk_map) {
 }
 
 long long calculate_checksum_p1(std::vector<int> disk_map) {
-    unsigned long long total = 0;
+    long long total = 0;
     for (int i = 0; i < disk_map.size(); i++) {
         if (disk_map[i] != -1) {
-            total += (long long)(i * (disk_map[i]));
+            total += (i * (disk_map[i]));
         };
     }
     return total;
@@ -36,16 +36,31 @@ long long calculate_checksum_p1(std::vector<int> disk_map) {
 long long calculate_checksum_p2(std::vector<File> disk_map) {
     long long total = 0;
     long long id = 0;
-    for (int i = 0; i < disk_map.size(); i++) {
-        for (int x = 0; x < disk_map[i].length; x++) {
-            if (disk_map[i].id != -1) {
+    for (const auto& f : disk_map) {
+        for (int x = 0; x < f.length; x++) {
+            if (f.id != -1) {
                 // std::cout << id << " * " << disk_map[i].id << "\n";
-                total += (long long)(id * (disk_map[i].id));
+                total += (id * (f.id));
             }
             id += 1;
         }
     }
     return total;
+}
+
+void print_map(std::vector<File> disk_map) {
+    for (const auto& f : disk_map) {
+        for (int i = 0; i < f.length; i++) {
+            if (f.id != -1) {
+                std::cout << f.id;
+            } else {
+                std::cout << '.';
+            }
+            std::cout << " ";
+        }
+        std::cout << "|";
+    }
+    std::cout << "\n";
 }
 
 std::vector<int> shift_left_p1(std::vector<int> disk_map) {
@@ -67,57 +82,31 @@ std::vector<int> shift_left_p1(std::vector<int> disk_map) {
     return disk_map;
 }
 
-void print_map(std::vector<File> disk_map) {
-    for (const auto f : disk_map) {
-        for (int i = 0; i < f.length; i++) {
-            if (f.id != -1) {
-                std::cout << f.id;
-            } else {
-                std::cout << '.';
+std::vector<File> shift_left(std::vector<File> disk_map) {
+    for (int r = disk_map.size() - 1; r >= 0; r--) {
+        int l = 0;
+
+        if (disk_map[r].id != -1) {
+            while (l < r) {
+                // std::cout << std::format("Checking {} l({}) and {} l({})\n", l,
+                //                          disk_map[l].id, r, disk_map[r].id);
+                if (disk_map[l].id == -1) {
+                    if (disk_map[l].length >= disk_map[r].length) {
+                        int free_space_left =
+                            disk_map[l].length - disk_map[r].length;
+
+                        disk_map[l].length = disk_map[r].length;
+                        std::swap(disk_map[l], disk_map[r]);
+                        if (free_space_left > 0) {
+                            disk_map.insert(disk_map.begin() + l + 1,
+                                            File(-1, free_space_left));
+                            r += 1;
+                        }
+                        break;
+                    }
+                }
+                l += 1;
             }
-            std::cout << " ";
-        }
-        std::cout << "|";
-    }
-    std::cout << "\n";
-}
-
-std::vector<File> move_left(std::vector<File> disk_map) {
-    int l = 0;
-    int r = disk_map.size() - 1;
-
-    while (l < r and l < disk_map.size()) {
-        if (disk_map[l].id == -1 and disk_map[r].id != -1 and
-            disk_map[l].length >= disk_map[r].length) {
-            int free_space_left = disk_map[l].length - disk_map[r].length;
-            disk_map[l].length = disk_map[r].length;
-
-            std::swap(disk_map[l], disk_map[r]);
-            if (free_space_left > 0) {
-                disk_map.insert(disk_map.begin() + l + 1,
-                                File(-1, free_space_left));
-            }
-
-            r -= 1;
-            l = 0;
-            disk_map = consolidate(disk_map);
-        }
-
-        while (disk_map[l].id != -1) {
-            l += 1;
-        }
-
-        while (disk_map[r].id == -1) {
-            r -= 1;
-        }
-
-        if (disk_map[l].length < disk_map[r].length) {
-            l += 1;
-        }
-
-        if (l >= r) {
-            l = 0;
-            r -= 1;
         }
     }
 
@@ -172,10 +161,8 @@ int part_two() {
 
         num += 1;
     }
-    // disk_map = consolidate(disk_map);
-    disk_map = move_left(disk_map);
+    disk_map = shift_left(disk_map);
     std::cout << "Checksum: " << calculate_checksum_p2(disk_map) << "\n";
-    // print_map(disk_map);
 
     return 0;
 }
