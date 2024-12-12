@@ -1,5 +1,6 @@
 #include <cmath>
 #include <string>
+#include <unordered_map>
 #include <utility>
 
 #include "../utils/utils.h"
@@ -8,11 +9,12 @@ int count_digits(unsigned long long i) {
 
     int count = 0;
     while (i != 0) {
-        i /= (unsigned long long) 10;
+        i /= (unsigned long long)10;
         count++;
     }
     return count;
 }
+
 std::vector<unsigned long long> pebble(unsigned long long p) {
     // If the stone is engraved with the number 0, it is replaced by a stone
     // engraved with the number 1.
@@ -29,18 +31,15 @@ std::vector<unsigned long long> pebble(unsigned long long p) {
     if (not(count_digits(p) % 2)) {
         auto s = std::to_string(p);
         int n = s.length();
-        std::cout << "digits: " << digits << "\n";
-        std::cout << s << "\n";
+        // std::cout << "digits: " << digits << "\n";
+        // std::cout << s << "\n";
         auto fhs = s.substr(0, n / 2);
         auto shs = s.substr(n / 2, n - n / 2);
-        std::cout << fhs << " " << shs << "\n";
+        // std::cout << fhs << " " << shs << "\n";
         auto fh = std::stoull(fhs);
         auto sh = std::stoull(shs);
         return {fh, sh};
     }
-
-    // If none of the other rules apply, the stone is replaced by a new stone;
-    // the old stone's number multiplied by 2024 is engraved on the new stone.
 
     return {p * (unsigned long long)2024};
 };
@@ -54,32 +53,75 @@ int part_one() {
                }) |
                std::ranges::to<std::vector>();
 
+    std::unordered_map<unsigned long long, unsigned long long> s;
     long long total = 0;
-    for (int _ = 0; _ < 25; _++) {
-        int i = 0;
-        while (i < inp.size()) {
-            auto res = pebble(inp[i]);
-            inp[i] = res[0];
-            if (res.size() == 2) {
-                inp.insert(inp.begin() + i + 1, res[1]);
-                i += 1;
-            }
-            i += 1;
-        }
-        // print_vec(inp, true);
+
+    for (const auto& i : inp) {
+        s.insert({i, 1});
     }
 
-    std::cout << "Pebble totals: " << inp.size() << "\n";
+    for (int _ = 0; _ < 25; _++) {
+        std::unordered_map<unsigned long long, unsigned long long> c;
+        for (const auto& e : s) {
+            auto p = pebble(e.first);
+            for (const auto& stone : p) {
+                if (c.contains(stone)) {
+                    c.find(stone)->second += e.second;
+                } else {
+                    c.insert({stone, e.second});
+                }
+            }
+        }
+
+        s = c;
+    }
+
+    for (const auto& p : s) {
+        total += p.second;
+    }
+
+    std::cout << "Pebble totals: " << total << "\n";
 
     return 0;
 }
 
 int part_two() {
-    auto line = get_input_one_line("./test-input");
-    auto inp =
-        line | std::ranges::views::split(' ') |
-        std::views::transform([](auto v) { return std::string_view(v); }) |
-        std::ranges::to<std::vector>();
+    auto inp = get_input_one_line("./input") | std::ranges::views::split(' ') |
+               std::views::transform([](auto v) {
+                   unsigned long long i = 0;
+                   std::from_chars(v.data(), v.data() + v.size(), i);
+                   return i;
+               }) |
+               std::ranges::to<std::vector>();
+
+    std::unordered_map<unsigned long long, unsigned long long> s;
+    long long total = 0;
+
+    for (const auto& i : inp) {
+        s.insert({i, 1});
+    }
+
+    for (int _ = 0; _ < 75; _++) {
+        std::unordered_map<unsigned long long, unsigned long long> c;
+        for (const auto& e : s) {
+            auto p = pebble(e.first);
+            for (const auto& stone : p) {
+                if (c.contains(stone)) {
+                    c.find(stone)->second += e.second;
+                } else {
+                    c.insert({stone, e.second});
+                }
+            }
+        }
+
+        s = c;
+    }
+
+    for (const auto& p : s) {
+        total += p.second;
+    }
+
+    std::cout << "Pebble totals: " << total << "\n";
 
     return 0;
 }
